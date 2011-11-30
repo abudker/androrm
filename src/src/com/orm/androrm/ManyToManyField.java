@@ -41,13 +41,22 @@ extends AbstractToManyRelation<L, R> {
 	private String mTableName;
 	
 	public ManyToManyField(Class<L> origin, 
-			Class<R> target) {
+			Class<R> target) {	
+		this(origin, target, null);
+	}
+	
+	public ManyToManyField(Class<L> origin, 
+			Class<R> target, String linkTableName) {
 		
 		mOriginClass = origin;
 		mTargetClass = target;
 		mValues = new ArrayList<R>();
 		
-		mTableName = createTableName();
+		if (linkTableName == null || linkTableName == "") {
+			mTableName = createTableName();
+		} else {
+			mTableName = linkTableName;
+		}
 	}
 	
 	private String createTableName() {
