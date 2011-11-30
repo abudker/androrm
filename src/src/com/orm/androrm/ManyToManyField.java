@@ -46,16 +46,16 @@ extends AbstractToManyRelation<L, R> {
 	}
 	
 	public ManyToManyField(Class<L> origin, 
-			Class<R> target, String linkTableName) {
+			Class<R> target, String dbTable) {
 		
 		mOriginClass = origin;
 		mTargetClass = target;
 		mValues = new ArrayList<R>();
 		
-		if (linkTableName == null || linkTableName == "") {
+		if (dbTable == null || dbTable == "") {
 			mTableName = createTableName();
 		} else {
-			mTableName = linkTableName;
+			mTableName = dbTable;
 		}
 	}
 	
