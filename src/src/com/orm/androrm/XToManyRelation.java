@@ -53,6 +53,19 @@ public interface XToManyRelation<O extends Model, T extends Model> extends Relat
 	public void addAll(Collection<T> values);
 	
 	/**
+	 * Remove a specified value from the list of referenced models.
+	 * 
+	 * @param value	Model instance that will be unreferenced. 
+	 */
+	public void remove(T value);
+	
+	/**
+	 * Removes all items from the list of referenced models.
+	 * 
+	 */
+	public void clear();
+	
+	/**
 	 * Retrieves a list of all referenced models. 
 	 * 
 	 * @param context	{@link Context} of the application.
