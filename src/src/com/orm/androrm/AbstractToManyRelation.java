@@ -61,6 +61,11 @@ implements XToManyRelation<O, T> {
 	}
 	
 	@Override
+	public void clear() {
+		mValues.clear();
+	}
+	
+	@Override
 	public Class<T> getTarget() {
 		return mTargetClass;
 	}
@@ -68,7 +73,6 @@ implements XToManyRelation<O, T> {
 	@Override
 	public void reset() {
 		mValues.clear();
-		mValuesToRemove.clear();
 	}
 	
 	@Override
