@@ -60,12 +60,6 @@ public interface XToManyRelation<O extends Model, T extends Model> extends Relat
 	public void remove(T value);
 	
 	/**
-	 * Removes all items from the list of referenced models.
-	 * 
-	 */
-	public void clear();
-	
-	/**
 	 * Retrieves a list of all referenced models. 
 	 * 
 	 * @param context	{@link Context} of the application.
