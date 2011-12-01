@@ -51,6 +51,7 @@ extends AbstractToManyRelation<L, R> {
 		mOriginClass = origin;
 		mTargetClass = target;
 		mValues = new ArrayList<R>();
+		mValuesToRemove = new ArrayList<R>();
 		
 		if (dbTable == null || dbTable == "") {
 			mTableName = createTableName();

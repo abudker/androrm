@@ -33,6 +33,7 @@ public abstract class AbstractToManyRelation<O extends Model,
 implements XToManyRelation<O, T> {
 	
 	protected List<T> mValues;
+	protected List<T> mValuesToRemove;
 	protected Class<O> mOriginClass;
 	protected Class<T> mTargetClass;
 	
@@ -53,7 +54,9 @@ implements XToManyRelation<O, T> {
 	@Override
 	public void remove(T value) {
 		if(value != null) {
-			mValues.remove(value);
+			if (!mValues.remove(value)){
+				mValuesToRemove.add(value);
+			}
 		}
 	}
 	
@@ -75,5 +78,10 @@ implements XToManyRelation<O, T> {
 	@Override
 	public List<T> getCachedValues() {
 		return mValues;
+	}
+	
+	@Override
+	public List<T> getCachedValuesToRemove() {
+		return mValuesToRemove;
 	}
 }

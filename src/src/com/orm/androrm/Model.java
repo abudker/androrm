@@ -343,6 +343,38 @@ public abstract class Model {
 					+ getEligableFields(originClass, origin).toString());
 		}
 	}
+	
+	private static final <T extends Model, O extends Model> void unsetBackLink(
+			
+			T 			target, 
+			Class<T> 	targetClass,
+			O 			origin, 
+			Class<O> 	originClass
+			
+	) throws NoSuchFieldException {
+		
+		ForeignKeyField<T> fk = null;
+		
+		try {
+			fk = getForeignKey(origin, originClass, targetClass);
+		} catch(IllegalAccessException e) {
+			Log.e(TAG, "an exception was thrown trying to gather a foreign key field pointing to " 
+					+ targetClass.getSimpleName() 
+					+ " on an instance of class " 
+					+ originClass.getSimpleName(), e);
+		}
+		
+		if(fk != null) {
+			fk.set(null);
+		} else {
+			throw new NoSuchFieldException("No field pointing to " 
+					+ targetClass.getSimpleName() 
+					+ " was found in class " 
+					+ originClass.getSimpleName() 
+					+"! Choices are: " 
+					+ getEligableFields(originClass, origin).toString());
+		}
+	}
 
 	protected PrimaryKeyField mId;
 	
@@ -579,6 +611,20 @@ public abstract class Model {
 				adapter.doInsertOrUpdate(m.getRelationTableName(), values, where);
 			}
 		}
+	
+		List<? extends Model> targetsToRemove = m.getCachedValuesToRemove();
+		for(Model target: targetsToRemove) {
+			/*
+			 * Only delete relations from the database if the
+			 * target model has been persisted. 
+			 */
+			if(target.getId() != 0) {
+				Where where = new Where();
+				where.and(DatabaseBuilder.getTableName(clazz), getId())
+					 .and(DatabaseBuilder.getTableName(m.getTarget()), target.getId());
+				adapter.delete(m.getRelationTableName(), where);
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -599,6 +645,15 @@ public abstract class Model {
 			 */
 			if(target.getId() != 0) {
 				setBackLink((T) this, (Class<T>) getClass(), (O) target, (Class<O>) target.getClass());
+				target.save(context);
+			}
+		}
+		
+		List<? extends Model> targetsToRemove = om.getCachedValuesToRemove();
+		
+		for(Model target: targetsToRemove) {
+			if(target.getId() != 0) {
+				unsetBackLink((T) this, (Class<T>) getClass(), (O) target, (Class<O>) target.getClass());
 				target.save(context);
 			}
 		}
