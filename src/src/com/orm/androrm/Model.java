@@ -596,7 +596,9 @@ public abstract class Model {
 	
 		//If the collection needs to be cleared
 		if (m.mShouldClear){
-			adapter.truncate(m.getRelationTableName());
+			Where where = new Where();
+			where.and(DatabaseBuilder.getTableName(clazz), getId());
+			adapter.delete(m.getRelationTableName(), where);
 			m.mShouldClear = false;
 		}
 		
