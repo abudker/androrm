@@ -34,6 +34,7 @@ implements XToManyRelation<O, T> {
 	
 	protected List<T> mValues;
 	protected List<T> mValuesToRemove;
+	protected boolean mShouldClear;
 	protected Class<O> mOriginClass;
 	protected Class<T> mTargetClass;
 	
@@ -62,7 +63,8 @@ implements XToManyRelation<O, T> {
 	
 	@Override
 	public void clear() {
-		mValues.clear();
+		reset();
+		mShouldClear = true;
 	}
 	
 	@Override
@@ -72,7 +74,9 @@ implements XToManyRelation<O, T> {
 
 	@Override
 	public void reset() {
+		mShouldClear = false;
 		mValues.clear();
+		mValuesToRemove.clear();
 	}
 	
 	@Override

@@ -593,7 +593,14 @@ public abstract class Model {
 		List<? extends Model> targets = m.getCachedValues();
 		
 		DatabaseAdapter adapter = new DatabaseAdapter(context);
+	
+		//If the collection needs to be cleared
+		if (m.mShouldClear){
+			adapter.truncate(m.getRelationTableName());
+			m.mShouldClear = false;
+		}
 		
+		//Persist anything in the add and remove caches.
 		for(Model target: targets) {
 			/*
 			 * Only save relation to the database if the
@@ -637,6 +644,21 @@ public abstract class Model {
 		
 		OneToManyField<T, ?> om = (OneToManyField<T, ?>) field;
 		List<? extends Model> targets = om.getCachedValues();
+		
+		if (om.mShouldClear){
+			DatabaseAdapter adapter = new DatabaseAdapter(context);
+			String fieldName = Model.getBackLinkFieldName(om.mTargetClass, om.mOriginClass);
+			
+			ContentValues values = new ContentValues();
+			Where where = new Where();
+			
+			where.and(fieldName, getId());
+			values.putNull(fieldName);
+			
+			adapter.doInsertOrUpdate(DatabaseBuilder.getTableName(om.mTargetClass) , values, where);
+			
+			om.mShouldClear = false;
+		}
 		
 		for(Model target: targets) {
 			/*

@@ -96,6 +96,20 @@ public class DatabaseAdapter {
 	}
 	
 	/**
+	 * Truncate a specific table.
+	 * 
+	 * @param 	table 	Query table.
+	 * @return	Number of affected rows.
+	 */
+	public int truncate(String table) {
+		open();	
+		int affectedRows = mDb.delete(table, null, null);
+		close();
+		
+		return affectedRows;
+	}
+	
+	/**
 	 * Inserts values into a table that has an unique id as identifier.
 	 * 
 	 * @param 	table		The affected table.
